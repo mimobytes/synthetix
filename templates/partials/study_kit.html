@@ -1,0 +1,164 @@
+<div class="workspace fade-in">
+    <div class="action-bar">
+        <div class="kit-identity">
+            <button class="btn-icon" 
+                    hx-get="/form" 
+                    hx-target="#main-stage" 
+                    hx-swap="innerHTML" 
+                    title="Return to input">←</button>
+            <div class="kit-title-group">
+                <h3>{{ data.title }}</h3>
+                <span class="kit-id">ID: {{ kit_id }}</span>
+            </div>
+        </div>
+
+        <div class="export-group">
+            <a href="/export/pdf/{{ kit_id }}?scope=quiz" class="btn btn-secondary btn-sm" download>
+                <span class="btn-icon-label">📄</span>
+                <span>Export Quiz PDF</span>
+            </a>
+            <a href="/export/pdf/{{ kit_id }}?scope=full" class="btn btn-secondary btn-sm" download>
+                <span class="btn-icon-label">📦</span>
+                <span>Export Full Dossier PDF</span>
+            </a>
+            <button class="btn btn-ghost btn-sm" hx-get="/form" hx-target="#main-stage" hx-swap="innerHTML">
+                New Session
+            </button>
+        </div>
+    </div>
+
+    <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-modules')">
+            <span>Detailed Notes & Modules</span>
+            <span class="counter-pill">{{ data.sections|length }}</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-glossary')">
+            <span>Glossary & Takeaways</span>
+            <span class="counter-pill">{{ data.glossary|length }}</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-quiz')">
+            <span>Interactive Quiz</span>
+            <span class="counter-pill">{{ data.quiz|length }}</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-answers')">
+            <span>Master Answer Key</span>
+        </button>
+    </div>
+
+    <!-- Detailed Notes Tab -->
+    <div id="tab-modules" class="tab-pane active">
+        <div class="card overview-card mb-4">
+            <div class="card-caption">Executive Overview & Framing</div>
+            <p class="overview-body">{{ data.overview }}</p>
+        </div>
+
+        <div class="modules-stack">
+            {% for sec in data.sections %}
+            <div class="card module-card">
+                <div class="module-header">
+                    <span class="module-index">Module {{ loop.index }}</span>
+                    <h4>{{ sec.heading }}</h4>
+                </div>
+                <div class="module-body">
+                    <p>{{ sec.content }}</p>
+                </div>
+                {% if sec.bullet_points %}
+                <div class="module-takeaways">
+                    <div class="subheading">Technical Details & Rules</div>
+                    <ul>
+                        {% for pt in sec.bullet_points %}
+                        <li>
+                            <span class="point-marker">◈</span>
+                            <span>{{ pt }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Glossary & Takeaways Tab -->
+    <div id="tab-glossary" class="tab-pane">
+        <div class="deck-grid mb-4">
+            <div class="card">
+                <div class="card-caption">High-Yield Exam Points</div>
+                <ul class="points-grid">
+                    {% for pt in data.high_yield_takeaways %}
+                    <li>
+                        <span class="point-marker">★</span>
+                        <div class="point-text">{{ pt }}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-caption">Key Definitions & Terminology</div>
+                <div class="glossary-stack">
+                    {% for item in data.glossary %}
+                    <div class="glossary-item">
+                        <strong class="glossary-term">{{ item.term }}</strong>
+                        <p class="glossary-def">{{ item.definition }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Tab -->
+    <div id="tab-quiz" class="tab-pane">
+        <div class="quiz-controls">
+            <div class="score-display">
+                <span>Quiz Progress:</span>
+                <strong id="answered-counter">0</strong> of {{ data.quiz|length }} answered
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="resetQuiz()">Restart Quiz</button>
+        </div>
+
+        <div class="quiz-deck">
+            {% for q in data.quiz %}
+            <div class="quiz-card" data-correct="{{ q.correct_answer }}">
+                <div class="quiz-card-top">
+                    <span class="q-number">Question {{ loop.index }}</span>
+                </div>
+                <p class="q-prompt">{{ q.question }}</p>
+                <div class="options-stack">
+                    {% for opt in q.options %}
+                    <button type="button" class="option-slot" onclick="selectAnswer(this)">
+                        <span class="option-key">{{ ['A', 'B', 'C', 'D'][loop.index0] }}</span>
+                        <span class="option-content">{{ opt }}</span>
+                    </button>
+                    {% endfor %}
+                </div>
+                <div class="feedback-drawer hidden">
+                    <div class="feedback-status"></div>
+                    <div class="feedback-detail"><strong>Rationale:</strong> {{ q.explanation }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Master Answer Key Tab -->
+    <div id="tab-answers" class="tab-pane">
+        <div class="answers-grid">
+            {% for q in data.quiz %}
+            <div class="card answer-card">
+                <div class="ans-header">
+                    <span class="badge-index">#{{ loop.index }}</span>
+                    <span class="ans-badge">Correct Answer</span>
+                </div>
+                <div class="ans-question">{{ q.question }}</div>
+                <div class="ans-value">{{ q.correct_answer }}</div>
+                <div class="ans-rationale">
+                    <strong>Explanation:</strong> {{ q.explanation }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

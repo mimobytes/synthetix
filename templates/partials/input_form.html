@@ -1,0 +1,36 @@
+<div class="view-panel fade-in">
+    <div class="panel-header">
+        <div>
+            <h2>Source Material</h2>
+            <p class="panel-desc">Paste textbook excerpts, transcriptions, or research notes to convert into structured modules.</p>
+        </div>
+        <div class="char-badge" id="char-count">0 characters</div>
+    </div>
+
+    <form hx-post="/generate"
+          hx-target="#main-stage"
+          hx-indicator="#loading-overlay"
+          hx-swap="innerHTML">
+        
+        <div class="editor-frame">
+            <textarea 
+                id="notes-area"
+                name="notes" 
+                placeholder="Paste material here (minimum 30 characters)..."
+                required></textarea>
+        </div>
+
+        <div id="loading-overlay" class="loading-overlay htmx-indicator">
+            <div class="spinner"></div>
+            <p>Synthesizing concepts, building key points & questions...</p>
+        </div>
+
+        <div class="panel-footer">
+            <button type="button" class="btn btn-ghost" onclick="document.getElementById('notes-area').value=''; updateCharCount();">Reset</button>
+            <button type="submit" class="btn btn-primary">
+                <span>Synthesize Knowledge Kit</span>
+                <span class="btn-arrow">→</span>
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthetix | AI Study Notes & Quiz Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-nav">
+            <div class="nav-brand">
+                <span class="brand-glyph">✦</span>
+                <span class="brand-title">Synthetix</span>
+                <span class="brand-tag">v2.5 Flash</span>
+            </div>
+            <div class="nav-actions">
+                <span class="status-indicator">Ready</span>
+            </div>
+        </header>
+
+        <main id="main-stage" class="app-main">
+            {% include "partials/input_form.html" %}
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
